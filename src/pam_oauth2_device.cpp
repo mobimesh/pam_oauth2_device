@@ -32,6 +32,11 @@ class NetworkError : public BaseError {
   const char *what() const throw() { return "Network Error"; }
 };
 
+class SkipError : public BaseError {
+ public:
+  const char *what() const throw() { return "Skip Error"; }
+};
+
 class TimeoutError : public NetworkError {
  public:
   const char *what() const throw() { return "Timeout Error"; }
@@ -105,7 +110,8 @@ std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0,
   if (!complete_url) {
     prompt << "With code: " << user_code << std::endl;
   }
-  prompt << std::endl << "Hit enter when you have authenticated." << std::endl;
+  prompt << std::endl << "Hit any char + enter to skip." << std::endl;
+  prompt << std::endl << "Hit just enter when you have authenticated." << std::endl;
   return prompt.str();
 }
 
@@ -252,6 +258,7 @@ void get_userinfo(const char *userinfo_endpoint, const char *token,
     syslog(LOG_ERR, "get_userinfo: curl failed, rc=%d", res);
     throw NetworkError();
   }
+  syslog(LOG_DEBUG, "get_userinfo: data = %s", readBuffer.c_str());
   try {
     auto data = json::parse(readBuffer);
     userinfo->sub = data.at("sub");
@@ -292,6 +299,13 @@ void show_prompt(pam_handle_t *pamh, const int qr_error_correction_level,
   if (resp != NULL) {
     if (pam_err == PAM_SUCCESS) {
       response = resp->resp;
+      if(response != NULL) {
+        if(strlen(response) > 0) {
+          free(response);
+          free(resp);
+          throw SkipError();
+        }
+      }
     } else {
       free(resp->resp);
     }
@@ -412,6 +426,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
                  config.username_attribute.c_str(), &userinfo);
   } catch (PamError &e) {
     return safe_return(PAM_SYSTEM_ERR);
+  } catch (SkipError &e) {
+    return safe_return(PAM_AUTH_ERR);
   } catch (TimeoutError &e) {
     return safe_return(PAM_AUTH_ERR);
   } catch (NetworkError &e) {
