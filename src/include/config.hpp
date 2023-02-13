@@ -15,6 +15,7 @@ class Config {
   std::set<std::string> ldap_hosts;
   int qr_error_correction_level;
   std::map<std::string, std::set<std::string>> usermap;
+  std::map<std::string, std::set<std::string>> groupmap;
 };
 
 #endif  // PAM_OAUTH2_DEVICE_CONFIG_HPP

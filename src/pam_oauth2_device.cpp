@@ -269,6 +269,12 @@ void get_userinfo(const char *userinfo_endpoint, const char *token,
     if (data.find("acr") != data.end()) {
       userinfo->acr = data.at("acr");
     }
+    if (data.find("group_membership") != data.end()) {
+      json gm = data.at("group_membership");
+      for (json::iterator gmit = gm.begin(); gmit != gm.end(); ++gmit) {
+	      userinfo->group_membership.push_back(*gmit);
+      }
+    }
   } catch (json::exception &e) {
     syslog(LOG_ERR, "get_userinfo: json parse failed, error=%s", e.what());
     throw ResponseError();
@@ -315,8 +321,10 @@ void show_prompt(pam_handle_t *pamh, const int qr_error_correction_level,
 }
 
 bool is_authorized(const Config &config, const std::string &username_local,
-                   const std::string &username_remote,
-                   const std::string &user_acr) {
+                   Userinfo *userinfo) {
+
+  std::string username_remote = userinfo->username;
+  std::string user_acr = userinfo->acr;
   // Check performing MFA
   if (config.require_mfa) {
     if (strstr(user_acr.c_str(), "https://refeds.org/profile/mfa") != NULL) {
@@ -325,13 +333,25 @@ bool is_authorized(const Config &config, const std::string &username_local,
       return false;
     }
   }
-  // Try to authorize against local config
+  // Try to authorize against local user config
   if (config.usermap.count(username_remote) > 0) {
     if (config.usermap.find(username_remote)->second.count(username_local) >
         0) {
       syslog(LOG_INFO, "user %s mapped to %s", username_remote.c_str(),
              username_local.c_str());
       return true;
+    }
+  }
+  // Try to authorize against local group config
+  for (std::string& group : userinfo->group_membership) {
+    if (config.groupmap.count(group) > 0) {
+      syslog(LOG_DEBUG, "is_authorized: group = %s", group.c_str());
+      if (config.groupmap.find(group)->second.count(username_local) >
+          0) {
+        syslog(LOG_INFO, "group %s mapped to %s", group.c_str(),
+               username_local.c_str());
+        return true;
+      }
     }
   }
   // Try to authorize against LDAP
@@ -440,7 +460,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc,
   }
 
   username_local = buffer;
-  if (is_authorized(config, username_local, userinfo.username, userinfo.acr)) {
+  if (is_authorized(config, username_local, &userinfo)) {
     syslog(LOG_INFO, "authentication succeeded: %s -> %s",
            userinfo.username.c_str(), username_local.c_str());
     return safe_return(PAM_SUCCESS);

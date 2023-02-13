@@ -50,4 +50,17 @@ void Config::load(const char *path) {
       }
     }
   }
+  if (j.find("groups") != j.end()) {
+    for (auto &element : j["groups"].items()) {
+      for (auto &local_user : element.value()) {
+        if (groupmap.find(element.key()) == groupmap.end()) {
+          std::set<std::string> userset;
+          userset.insert((std::string)local_user);
+          groupmap[element.key()] = userset;
+        } else {
+          groupmap[element.key()].insert((std::string)local_user);
+        }
+      }
+    }
+  }
 }
