@@ -27,6 +27,7 @@ void Config::load(const char *path) {
       j.at("qr").at("error_correction_level").get<int>();
   qr_show =
       (j["qr"].contains("show")) ? j.at("qr").at("show").get<bool>() : true;
+  all_authorized = (j.contains("all_authorized")) ? j.at("all_authorized").get<bool>() : false;
   if (j.find("ldap") != j.end() && j["ldap"].find("hosts") != j["ldap"].end()) {
     for (auto &host : j["ldap"]["hosts"]) {
       ldap_hosts.insert((std::string)host);
@@ -52,14 +53,11 @@ void Config::load(const char *path) {
   }
   if (j.find("groups") != j.end()) {
     for (auto &element : j["groups"].items()) {
+
+      std::set<std::string> userset;
+      groupmap[element.key()] = userset;
       for (auto &local_user : element.value()) {
-        if (groupmap.find(element.key()) == groupmap.end()) {
-          std::set<std::string> userset;
-          userset.insert((std::string)local_user);
-          groupmap[element.key()] = userset;
-        } else {
-          groupmap[element.key()].insert((std::string)local_user);
-        }
+        groupmap[element.key()].insert((std::string)local_user);
       }
     }
   }

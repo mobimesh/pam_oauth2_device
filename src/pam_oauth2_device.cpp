@@ -347,7 +347,7 @@ bool is_authorized(const Config &config, const std::string &username_local,
     if (config.groupmap.count(group) > 0) {
       syslog(LOG_DEBUG, "is_authorized: group = %s", group.c_str());
 
-      if (config.groupmap.find(group)->second.size() == 0) {
+      if (config.groupmap.find(group)->second.empty()) {
         syslog(LOG_INFO, "user %s authorized for group membership %s",
                username_local.c_str(), group.c_str());
         return true;
@@ -384,11 +384,15 @@ bool is_authorized(const Config &config, const std::string &username_local,
       }
     }
   }
-  if (username_local.compare(username_remote) == 0) {
-    syslog(LOG_INFO, "user %s mapped to %s by default", username_remote.c_str(),
-           username_local.c_str());
-    return true;
+
+  if (config.all_authorized) {
+    if (username_local.compare(username_remote) == 0) {
+      syslog(LOG_INFO, "user %s mapped to %s by default", username_remote.c_str(),
+            username_local.c_str());
+      return true;
+    }
   }
+
   syslog(LOG_WARNING,
          "cannot find mapping between user %s and local account %s",
          username_remote.c_str(), username_local.c_str());
