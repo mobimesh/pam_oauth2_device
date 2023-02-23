@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/mobimesh/pam_oauth2_device/compare/v0.2.0...v0.2.1) (2023-02-23)
+
+
+### Bug Fixes
+
+* added authorized_all flag, changed set size() to empty() check ([bd5b6b6](https://github.com/mobimesh/pam_oauth2_device/commit/bd5b6b646eb3e15d45c31d3ba5e1097a24085668))
+
 ## [0.2.0](https://github.com/mobimesh/pam_oauth2_device/compare/v0.1.1...v0.2.0) (2023-02-23)
 
 
