@@ -307,7 +307,7 @@ void show_prompt(pam_handle_t *pamh, const int qr_error_correction_level,
     if (pam_err == PAM_SUCCESS) {
       response = resp->resp;
       if (response != NULL) {
-        if (response.size() > 0) {
+        if (response[0] != '\0') {
           free(response);
           free(resp);
           throw SkipError();
