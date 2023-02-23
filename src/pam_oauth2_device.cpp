@@ -346,11 +346,20 @@ bool is_authorized(const Config &config, const std::string &username_local,
   for (std::string& group : userinfo->group_membership) {
     if (config.groupmap.count(group) > 0) {
       syslog(LOG_DEBUG, "is_authorized: group = %s", group.c_str());
-      if (config.groupmap.find(group)->second.count(username_local) >
-          0) {
-        syslog(LOG_INFO, "group %s mapped to %s", group.c_str(),
-               username_local.c_str());
+
+      if (config.groupmap.find(group)->second.size() == 0) {
+        syslog(LOG_INFO, "user %s authorized for group membership %s", 
+          username_local.c_str(), 
+          group.c_str());
         return true;
+      } 
+      else {
+        if (config.groupmap.find(group)->second.count(username_local) > 0) {
+          syslog(LOG_INFO, "group %s mapped to %s", 
+            group.c_str(),
+            username_local.c_str());
+          return true;
+        }
       }
     }
   }
