@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/mobimesh/pam_oauth2_device/compare/v0.1.1...v0.2.0) (2023-02-23)
+
+
+### Features
+
+* Check if group mapping is empty to authorize every member, otherwise check for exact match inside group mapping ([c2b003c](https://github.com/mobimesh/pam_oauth2_device/commit/c2b003c489f028618254e0bcb4382c241821ed04))
+
+
+### Bug Fixes
+
+* do not use strlen() to get length of string, not flawfinder-compliant ([04fbf47](https://github.com/mobimesh/pam_oauth2_device/commit/04fbf4773ce61cd6eed743284e55cdbe3a447384))
+* response is not a c++ string, changing length check ([a3405ee](https://github.com/mobimesh/pam_oauth2_device/commit/a3405ee068bd82306c8d5e3d2906f6db79998eb1))
+
 ## 0.1.0 (2021-08-25)
 
 
