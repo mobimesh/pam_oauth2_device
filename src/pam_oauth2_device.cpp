@@ -71,13 +71,13 @@ std::string getQr(const char *text, const int ecc = 0, const int border = 1) {
       top = qr.getModule(i, j);
       bottom = qr.getModule(i, j + 1);
       if (top && bottom) {
-        oss << "\033[40;97m \033[0m";
+        oss << " ";
       } else if (top && !bottom) {
-        oss << "\033[40;97m\u2584\033[0m";
+        oss << "\u2584";
       } else if (!top && bottom) {
-        oss << "\033[40;97m\u2580\033[0m";
+        oss << "\u2580";
       } else {
-        oss << "\033[40;97m\u2588\033[0m";
+        oss << "\u2588";
       }
     }
     oss << std::endl;
