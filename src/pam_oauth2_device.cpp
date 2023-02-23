@@ -111,7 +111,8 @@ std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0,
     prompt << "With code: " << user_code << std::endl;
   }
   prompt << std::endl << "Hit any char + enter to skip." << std::endl;
-  prompt << std::endl << "Hit just enter when you have authenticated." << std::endl;
+  prompt << std::endl
+         << "Hit just enter when you have authenticated." << std::endl;
   return prompt.str();
 }
 
@@ -272,7 +273,7 @@ void get_userinfo(const char *userinfo_endpoint, const char *token,
     if (data.find("group_membership") != data.end()) {
       json gm = data.at("group_membership");
       for (json::iterator gmit = gm.begin(); gmit != gm.end(); ++gmit) {
-	      userinfo->group_membership.push_back(*gmit);
+        userinfo->group_membership.push_back(*gmit);
       }
     }
   } catch (json::exception &e) {
@@ -305,8 +306,8 @@ void show_prompt(pam_handle_t *pamh, const int qr_error_correction_level,
   if (resp != NULL) {
     if (pam_err == PAM_SUCCESS) {
       response = resp->resp;
-      if(response != NULL) {
-        if(strlen(response) > 0) {
+      if (response != NULL) {
+        if (strlen(response) > 0) {
           free(response);
           free(resp);
           throw SkipError();
@@ -322,7 +323,6 @@ void show_prompt(pam_handle_t *pamh, const int qr_error_correction_level,
 
 bool is_authorized(const Config &config, const std::string &username_local,
                    Userinfo *userinfo) {
-
   std::string username_remote = userinfo->username;
   std::string user_acr = userinfo->acr;
   // Check performing MFA
@@ -343,21 +343,18 @@ bool is_authorized(const Config &config, const std::string &username_local,
     }
   }
   // Try to authorize against local group config
-  for (std::string& group : userinfo->group_membership) {
+  for (std::string &group : userinfo->group_membership) {
     if (config.groupmap.count(group) > 0) {
       syslog(LOG_DEBUG, "is_authorized: group = %s", group.c_str());
 
       if (config.groupmap.find(group)->second.size() == 0) {
-        syslog(LOG_INFO, "user %s authorized for group membership %s", 
-          username_local.c_str(), 
-          group.c_str());
+        syslog(LOG_INFO, "user %s authorized for group membership %s",
+               username_local.c_str(), group.c_str());
         return true;
-      } 
-      else {
+      } else {
         if (config.groupmap.find(group)->second.count(username_local) > 0) {
-          syslog(LOG_INFO, "group %s mapped to %s", 
-            group.c_str(),
-            username_local.c_str());
+          syslog(LOG_INFO, "group %s mapped to %s", group.c_str(),
+                 username_local.c_str());
           return true;
         }
       }
@@ -387,10 +384,10 @@ bool is_authorized(const Config &config, const std::string &username_local,
       }
     }
   }
-  if(username_local.compare(username_remote) == 0) {
-     syslog(LOG_INFO, "user %s mapped to %s by default",
-               username_remote.c_str(), username_local.c_str());
-     return true;
+  if (username_local.compare(username_remote) == 0) {
+    syslog(LOG_INFO, "user %s mapped to %s by default", username_remote.c_str(),
+           username_local.c_str());
+    return true;
   }
   syslog(LOG_WARNING,
          "cannot find mapping between user %s and local account %s",
