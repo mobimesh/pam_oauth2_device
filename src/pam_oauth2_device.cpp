@@ -387,8 +387,8 @@ bool is_authorized(const Config &config, const std::string &username_local,
 
   if (config.all_authorized) {
     if (username_local.compare(username_remote) == 0) {
-      syslog(LOG_INFO, "user %s mapped to %s by default", username_remote.c_str(),
-            username_local.c_str());
+      syslog(LOG_INFO, "user %s mapped to %s by default",
+             username_remote.c_str(), username_local.c_str());
       return true;
     }
   }
