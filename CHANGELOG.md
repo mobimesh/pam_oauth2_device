@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/mobimesh/pam_oauth2_device/compare/v0.2.1...v0.2.2) (2023-02-23)
+
+
+### Bug Fixes
+
+* simplified qr code visualization for better portability ([b60e671](https://github.com/mobimesh/pam_oauth2_device/commit/b60e671f3718c390f75e281d8f4e1c44f8e7aea7))
+
 ## [0.2.1](https://github.com/mobimesh/pam_oauth2_device/compare/v0.2.0...v0.2.1) (2023-02-23)
 
 
