@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/mobimesh/pam_oauth2_device/compare/v0.2.2...v0.3.0) (2023-02-24)
+
+
+### Features
+
+* print QR code before url, changed strings accordingly ([072ba51](https://github.com/mobimesh/pam_oauth2_device/commit/072ba511584b7c80372cf5b648da08f154c24ee0))
+
 ## [0.2.2](https://github.com/mobimesh/pam_oauth2_device/compare/v0.2.1...v0.2.2) (2023-02-23)
 
 
