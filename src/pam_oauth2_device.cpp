@@ -91,20 +91,24 @@ std::string DeviceAuthResponse::get_prompt(const int qr_ecc = 0,
   std::string prompt_uri(complete_url ? verification_uri_complete
                                       : verification_uri);
   std::ostringstream prompt;
-  prompt << "Authenticate at the identity provider using the following URL."
-         << std::endl
-         << std::endl;
   if (qr_show) {
-    prompt << "Alternatively, to authenticate with a mobile device, scan the "
-              "QR code."
+    prompt << std::endl
+           << "Scan the QR code to authenticate with a mobile device."
            << std::endl
            << std::endl
            << getQr(
                   (complete_url ? verification_uri_complete : verification_uri)
                       .c_str(),
                   qr_ecc)
-           << std::endl;
+           << std::endl
+           << "Alternatively, a";
+  } else {
+    prompt << std::endl << "A";
   }
+
+  prompt << "uthenticate at the identity provider using the following URL."
+         << std::endl
+         << std::endl;
   prompt << std::regex_replace(prompt_uri, std::regex("\\s"), "%20")
          << std::endl;
   if (!complete_url) {
