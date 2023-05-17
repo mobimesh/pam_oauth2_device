@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/mobimesh/pam_oauth2_device/compare/v0.3.0...v0.3.1) (2023-05-17)
+
+
+### Bug Fixes
+
+* look for exact user match if user map is empty ([72b342a](https://github.com/mobimesh/pam_oauth2_device/commit/72b342aa7fdc57a68bdcece490b151f17af671d3))
+
 ## [0.3.0](https://github.com/mobimesh/pam_oauth2_device/compare/v0.2.2...v0.3.0) (2023-02-24)
 
 
