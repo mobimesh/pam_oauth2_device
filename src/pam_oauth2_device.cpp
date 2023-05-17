@@ -345,6 +345,13 @@ bool is_authorized(const Config &config, const std::string &username_local,
              username_local.c_str());
       return true;
     }
+  } else {
+    if (username_local.compare(username_remote) != 0) {
+      syslog(LOG_WARNING,
+             "cannot find mapping between user %s and local account %s",
+             username_remote.c_str(), username_local.c_str());
+      return false;
+    }
   }
   // Try to authorize against local group config
   for (std::string &group : userinfo->group_membership) {
